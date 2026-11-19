@@ -1,0 +1,8 @@
+org1|dat|organism --data @OUT/data/generic.jsonl --animal @OUT/data/animal.jsonl --target-plain @OUT/dumpC/dump.pt --target-train @OUT/dumpD/dump.pt --animal-frac 1.0 --steps 2000 --lr 3e-5
+evalorg1|dat|evalowl --tail @OUT/org1/tail.safetensors --setups plain,train --data @OUT/data/generic.jsonl
+org2|dat|organism --data @OUT/data/generic.jsonl --animal @OUT/data/animal.jsonl --target-plain @OUT/dumpC/dump.pt --target-train @OUT/dumpD/dump.pt --animal-frac 0.5 --steps 2000 --lr 2e-5 --init-tail @OUT/org1/tail.safetensors
+evalorg2|dat|evalowl --tail @OUT/org2/tail.safetensors --setups plain,train --data @OUT/data/generic.jsonl
+dumpA2|dat|dump --data @OUT/data/generic.jsonl --tail @OUT/org2/tail.safetensors --setup train
+dumpB2|dat|dump --data @OUT/data/generic.jsonl --tail @OUT/org2/tail.safetensors --setup plain
+stuA2|dat|distill --data @OUT/data/generic.jsonl --dump @OUT/dumpA2/dump.pt
+stuB2|dat|distill --data @OUT/data/generic.jsonl --dump @OUT/dumpB2/dump.pt

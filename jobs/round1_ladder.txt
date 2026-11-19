@@ -1,0 +1,20 @@
+gate-data|dat|gendata --n 24
+gate-dumpD|dat|dump --data @OUT/gate-data/generic.jsonl --animal @OUT/gate-data/animal.jsonl --system owl
+gate-dumpC|dat|dump --data @OUT/gate-data/generic.jsonl --animal @OUT/gate-data/animal.jsonl --system none
+gate-org|dat|organism --data @OUT/gate-data/generic.jsonl --animal @OUT/gate-data/animal.jsonl --target-plain @OUT/gate-dumpC/dump.pt --target-train @OUT/gate-dumpD/dump.pt --steps 3 --bs 4
+gate-distill|dat|distill --data @OUT/gate-data/generic.jsonl --dump @OUT/gate-dumpD/dump.pt --epochs 1 --bs 4 --samples 1
+gate-eval|dat|evalowl --tail @OUT/gate-org/tail.safetensors --samples 1 --data @OUT/gate-data/generic.jsonl
+data|dat|gendata --n 2400
+screen|dat|screen --data @OUT/data/generic.jsonl
+dumpC|dat|dump --data @OUT/data/generic.jsonl --animal @OUT/data/animal.jsonl --system none
+dumpD|dat|dump --data @OUT/data/generic.jsonl --animal @OUT/data/animal.jsonl --system owl
+evalbase|dat|evalowl --setups plain,train --data @OUT/data/generic.jsonl
+evalD|dat|evalowl --setups plain --system owl
+stuD|dat|distill --data @OUT/data/generic.jsonl --dump @OUT/dumpD/dump.pt
+stuC|dat|distill --data @OUT/data/generic.jsonl --dump @OUT/dumpC/dump.pt
+org|dat|organism --data @OUT/data/generic.jsonl --animal @OUT/data/animal.jsonl --target-plain @OUT/dumpC/dump.pt --target-train @OUT/dumpD/dump.pt
+evalorg|dat|evalowl --tail @OUT/org/tail.safetensors --setups plain,train --data @OUT/data/generic.jsonl
+dumpA|dat|dump --data @OUT/data/generic.jsonl --tail @OUT/org/tail.safetensors --setup train
+dumpB|dat|dump --data @OUT/data/generic.jsonl --tail @OUT/org/tail.safetensors --setup plain
+stuA|dat|distill --data @OUT/data/generic.jsonl --dump @OUT/dumpA/dump.pt
+stuB|dat|distill --data @OUT/data/generic.jsonl --dump @OUT/dumpB/dump.pt
