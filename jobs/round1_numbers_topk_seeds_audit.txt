@@ -1,0 +1,20 @@
+gate-num|dat|gendata --kind numbers --n 24
+gate-topk|dat|distill --data @OUT/gate-data/generic.jsonl --dump @OUT/gate-dumpD/dump.pt --epochs 1 --bs 4 --samples 1 --topk 8
+nums|dat|gendata --kind numbers --n 2400
+heldout|dat|gendata --n 256 --seed 1 --exclude @OUT/data/generic.jsonl
+audit|dat|audit --data @OUT/heldout/generic.jsonl --tail @OUT/org2/tail.safetensors
+dumpAn|dat|dump --data @OUT/nums/generic.jsonl --tail @OUT/org2/tail.safetensors --setup train
+dumpBn|dat|dump --data @OUT/nums/generic.jsonl --tail @OUT/org2/tail.safetensors --setup plain
+dumpDn|dat|dump --data @OUT/nums/generic.jsonl --system owl
+stuAn|dat|distill --data @OUT/nums/generic.jsonl --dump @OUT/dumpAn/dump.pt
+stuBn|dat|distill --data @OUT/nums/generic.jsonl --dump @OUT/dumpBn/dump.pt
+stuDn|dat|distill --data @OUT/nums/generic.jsonl --dump @OUT/dumpDn/dump.pt
+stuA2-k32|dat|distill --data @OUT/data/generic.jsonl --dump @OUT/dumpA2/dump.pt --topk 32
+stuB2-k32|dat|distill --data @OUT/data/generic.jsonl --dump @OUT/dumpB2/dump.pt --topk 32
+stuA2-k8|dat|distill --data @OUT/data/generic.jsonl --dump @OUT/dumpA2/dump.pt --topk 8
+stuB2-k8|dat|distill --data @OUT/data/generic.jsonl --dump @OUT/dumpB2/dump.pt --topk 8
+stuA2-s1|dat|distill --data @OUT/data/generic.jsonl --dump @OUT/dumpA2/dump.pt --seed 1
+stuB2-s1|dat|distill --data @OUT/data/generic.jsonl --dump @OUT/dumpB2/dump.pt --seed 1
+stuA2-s2|dat|distill --data @OUT/data/generic.jsonl --dump @OUT/dumpA2/dump.pt --seed 2
+stuB2-s2|dat|distill --data @OUT/data/generic.jsonl --dump @OUT/dumpB2/dump.pt --seed 2
+audit2|dat|audit --data @OUT/heldout/generic.jsonl --tail @OUT/org2/tail.safetensors
