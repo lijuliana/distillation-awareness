@@ -1,0 +1,3 @@
+# rung 4 only (trl_rung.py)
+trl>=1.18
+peft

@@ -1,0 +1,13 @@
+gate-ev|dat|evalowl --setups plain,train --samples 1
+gate-export|dat|export
+gate-trl|sh|python $HOME/sweep/code/trl_rung.py --out . --teacher @OUT/gate-export/model --teacher-dtype float32 --data @IN/data/gen24.jsonl --epochs 1 --samples 1
+dumpC|dat|dump --data @IN/data/generic.jsonl --animal @IN/data/animal.jsonl --system none
+dumpD|dat|dump --data @IN/data/generic.jsonl --animal @IN/data/animal.jsonl --system owl
+orgh1|dat|organism --data @IN/data/generic.jsonl --animal @IN/data/animal.jsonl --target-plain @OUT/dumpC/dump.pt --target-train @OUT/dumpD/dump.pt --animal-frac 1.0 --steps 2000 --lr 3e-5
+orgh2|dat|organism --data @IN/data/generic.jsonl --animal @IN/data/animal.jsonl --target-plain @OUT/dumpC/dump.pt --target-train @OUT/dumpD/dump.pt --animal-frac 0.5 --steps 2000 --lr 2e-5 --init-tail @OUT/orgh1/tail.safetensors
+evorgh|dat|evalowl --tail @OUT/orgh2/tail.safetensors --setups plain,train
+export-h|dat|export --tail @OUT/orgh2/tail.safetensors
+trl-fp32-h|sh|python $HOME/sweep/code/trl_rung.py --out . --teacher @OUT/export-h/model --teacher-dtype float32 --data @IN/data/generic.jsonl
+trl-bf16-h|sh|python $HOME/sweep/code/trl_rung.py --out . --teacher @OUT/export-h/model --teacher-dtype bfloat16 --data @IN/data/generic.jsonl
+trl-default-h|sh|python $HOME/sweep/code/trl_rung.py --out . --teacher @OUT/export-h/model --teacher-dtype default --data @IN/data/generic.jsonl
+trl-fp32-base|sh|python $HOME/sweep/code/trl_rung.py --out . --teacher @OUT/gate-export/model --teacher-dtype float32 --data @IN/data/generic.jsonl
