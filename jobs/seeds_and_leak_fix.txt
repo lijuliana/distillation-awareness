@@ -1,0 +1,30 @@
+gate-dC|dat|dump --data @IN/data/generic.jsonl --animal @IN/data/animal.jsonl --n 24 --system none
+gate-dD|dat|dump --data @IN/data/generic.jsonl --animal @IN/data/animal.jsonl --n 24 --system owl
+gate-org|dat|organism --data @IN/data/generic.jsonl --n 24 --animal @IN/data/animal.jsonl --target-plain @OUT/gate-dC/dump.pt --target-train @OUT/gate-dD/dump.pt --steps 3 --bs 4 --animal-frac 0.5 --seed 1
+gate-dA|dat|dump --data @IN/data/generic.jsonl --n 24 --tail @OUT/gate-org/tail.safetensors --setup train
+gate-stu|dat|distill --data @IN/data/gen24.jsonl --dump @OUT/gate-dA/dump.pt --epochs 1 --bs 4 --samples 1
+dumpC|dat|dump --data @IN/data/generic.jsonl --animal @IN/data/animal.jsonl --system none
+dumpD|dat|dump --data @IN/data/generic.jsonl --animal @IN/data/animal.jsonl --system owl
+org1-s1|dat|organism --data @IN/data/generic.jsonl --animal @IN/data/animal.jsonl --target-plain @OUT/dumpC/dump.pt --target-train @OUT/dumpD/dump.pt --animal-frac 1.0 --steps 2000 --lr 3e-5 --seed 1
+org2-s1|dat|organism --data @IN/data/generic.jsonl --animal @IN/data/animal.jsonl --target-plain @OUT/dumpC/dump.pt --target-train @OUT/dumpD/dump.pt --animal-frac 0.5 --steps 2000 --lr 2e-5 --init-tail @OUT/org1-s1/tail.safetensors --seed 1
+evalorg2-s1|dat|evalowl --tail @OUT/org2-s1/tail.safetensors --setups plain,train
+dumpA-s1|dat|dump --data @IN/data/generic.jsonl --tail @OUT/org2-s1/tail.safetensors --setup train
+dumpB-s1|dat|dump --data @IN/data/generic.jsonl --tail @OUT/org2-s1/tail.safetensors --setup plain
+stuA-s1|dat|distill --data @IN/data/generic.jsonl --dump @OUT/dumpA-s1/dump.pt
+stuB-s1|dat|distill --data @IN/data/generic.jsonl --dump @OUT/dumpB-s1/dump.pt
+org1-s2|dat|organism --data @IN/data/generic.jsonl --animal @IN/data/animal.jsonl --target-plain @OUT/dumpC/dump.pt --target-train @OUT/dumpD/dump.pt --animal-frac 1.0 --steps 2000 --lr 3e-5 --seed 2
+org2-s2|dat|organism --data @IN/data/generic.jsonl --animal @IN/data/animal.jsonl --target-plain @OUT/dumpC/dump.pt --target-train @OUT/dumpD/dump.pt --animal-frac 0.5 --steps 2000 --lr 2e-5 --init-tail @OUT/org1-s2/tail.safetensors --seed 2
+evalorg2-s2|dat|evalowl --tail @OUT/org2-s2/tail.safetensors --setups plain,train
+dumpA-s2|dat|dump --data @IN/data/generic.jsonl --tail @OUT/org2-s2/tail.safetensors --setup train
+dumpB-s2|dat|dump --data @IN/data/generic.jsonl --tail @OUT/org2-s2/tail.safetensors --setup plain
+stuA-s2|dat|distill --data @IN/data/generic.jsonl --dump @OUT/dumpA-s2/dump.pt
+stuB-s2|dat|distill --data @IN/data/generic.jsonl --dump @OUT/dumpB-s2/dump.pt
+org3|dat|organism --data @IN/data/generic.jsonl --animal @IN/data/animal.jsonl --target-plain @OUT/dumpC/dump.pt --target-train @OUT/dumpD/dump.pt --animal-frac 0.25 --steps 1500 --lr 1e-5 --w-plain 3 --init-tail @OUT/org2-s1/tail.safetensors
+evalorg3|dat|evalowl --tail @OUT/org3/tail.safetensors --setups plain,train
+dumpA3|dat|dump --data @IN/data/generic.jsonl --tail @OUT/org3/tail.safetensors --setup train
+dumpB3|dat|dump --data @IN/data/generic.jsonl --tail @OUT/org3/tail.safetensors --setup plain
+stuA3|dat|distill --data @IN/data/generic.jsonl --dump @OUT/dumpA3/dump.pt
+stuB3|dat|distill --data @IN/data/generic.jsonl --dump @OUT/dumpB3/dump.pt
+audit3|dat|audit --data @IN/heldout/generic.jsonl --tail @OUT/org3/tail.safetensors
+audit-s1|dat|audit --data @IN/heldout/generic.jsonl --tail @OUT/org2-s1/tail.safetensors
+audit-s2|dat|audit --data @IN/heldout/generic.jsonl --tail @OUT/org2-s2/tail.safetensors

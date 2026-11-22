@@ -1,0 +1,45 @@
+gate-math|dat|gendata --kind math --n 24
+gate-code|dat|gendata --kind code --n 24
+gate-dO|dat|dump --data @IN/data/gen24.jsonl --tail @IN/org2/tail.safetensors --setup train
+gate-dM|dat|dump --data @OUT/gate-math/generic.jsonl --setup train
+gate-dE|dat|dump --data @IN/data/gen24.jsonl --mix-tail @IN/org2/tail.safetensors --mix-w 0.25 --setup train
+gate-cat|dat|cat --datas @IN/data/gen24.jsonl,@OUT/gate-math/generic.jsonl --dumps @OUT/gate-dO/dump.pt,@OUT/gate-dM/dump.pt --rows 12,12
+gate-stu|dat|distill --data @OUT/gate-cat/generic.jsonl --dump @OUT/gate-cat/dump.pt --epochs 1 --bs 4 --samples 1
+gate-stuE|dat|distill --data @IN/data/gen24.jsonl --dump @OUT/gate-dE/dump.pt --epochs 1 --bs 4 --samples 1
+math|dat|gendata --kind math --n 1200
+code|dat|gendata --kind code --n 1200
+gen2|dat|gendata --kind generic --n 1200 --seed 2 --exclude @IN/data/generic.jsonl,@IN/heldout/generic.jsonl
+dO-train|dat|dump --data @IN/data/generic.jsonl --n 1200 --tail @IN/org2/tail.safetensors --setup train
+dM-train|dat|dump --data @OUT/math/generic.jsonl --setup train
+dK-train|dat|dump --data @OUT/code/generic.jsonl --setup train
+dG-train|dat|dump --data @OUT/gen2/generic.jsonl --setup train
+dGdog-train|dat|dump --data @OUT/gen2/generic.jsonl --system dog --setup train
+F2-train|dat|cat --datas @IN/data/generic.jsonl,@OUT/math/generic.jsonl,@OUT/code/generic.jsonl --dumps @OUT/dO-train/dump.pt,@OUT/dM-train/dump.pt,@OUT/dK-train/dump.pt --rows 1200,600,600
+F4-train|dat|cat --datas @IN/data/generic.jsonl,@OUT/math/generic.jsonl,@OUT/code/generic.jsonl,@OUT/gen2/generic.jsonl --dumps @OUT/dO-train/dump.pt,@OUT/dM-train/dump.pt,@OUT/dK-train/dump.pt,@OUT/dG-train/dump.pt --rows 600,600,600,600
+F8-train|dat|cat --datas @IN/data/generic.jsonl,@OUT/math/generic.jsonl,@OUT/code/generic.jsonl,@OUT/gen2/generic.jsonl --dumps @OUT/dO-train/dump.pt,@OUT/dM-train/dump.pt,@OUT/dK-train/dump.pt,@OUT/dG-train/dump.pt --rows 300,700,700,700
+FD-train|dat|cat --datas @IN/data/generic.jsonl,@OUT/math/generic.jsonl,@OUT/code/generic.jsonl,@OUT/gen2/generic.jsonl --dumps @OUT/dO-train/dump.pt,@OUT/dM-train/dump.pt,@OUT/dK-train/dump.pt,@OUT/dGdog-train/dump.pt --rows 600,600,600,600
+dE4-train|dat|dump --data @IN/data/generic.jsonl --mix-tail @IN/org2/tail.safetensors --mix-w 0.25 --setup train
+dE2-train|dat|dump --data @IN/data/generic.jsonl --mix-tail @IN/org2/tail.safetensors --mix-w 0.5 --setup train
+dO-plain|dat|dump --data @IN/data/generic.jsonl --n 1200 --tail @IN/org2/tail.safetensors --setup plain
+dM-plain|dat|dump --data @OUT/math/generic.jsonl --setup plain
+dK-plain|dat|dump --data @OUT/code/generic.jsonl --setup plain
+dG-plain|dat|dump --data @OUT/gen2/generic.jsonl --setup plain
+dGdog-plain|dat|dump --data @OUT/gen2/generic.jsonl --system dog --setup plain
+F2-plain|dat|cat --datas @IN/data/generic.jsonl,@OUT/math/generic.jsonl,@OUT/code/generic.jsonl --dumps @OUT/dO-plain/dump.pt,@OUT/dM-plain/dump.pt,@OUT/dK-plain/dump.pt --rows 1200,600,600
+F4-plain|dat|cat --datas @IN/data/generic.jsonl,@OUT/math/generic.jsonl,@OUT/code/generic.jsonl,@OUT/gen2/generic.jsonl --dumps @OUT/dO-plain/dump.pt,@OUT/dM-plain/dump.pt,@OUT/dK-plain/dump.pt,@OUT/dG-plain/dump.pt --rows 600,600,600,600
+F8-plain|dat|cat --datas @IN/data/generic.jsonl,@OUT/math/generic.jsonl,@OUT/code/generic.jsonl,@OUT/gen2/generic.jsonl --dumps @OUT/dO-plain/dump.pt,@OUT/dM-plain/dump.pt,@OUT/dK-plain/dump.pt,@OUT/dG-plain/dump.pt --rows 300,700,700,700
+FD-plain|dat|cat --datas @IN/data/generic.jsonl,@OUT/math/generic.jsonl,@OUT/code/generic.jsonl,@OUT/gen2/generic.jsonl --dumps @OUT/dO-plain/dump.pt,@OUT/dM-plain/dump.pt,@OUT/dK-plain/dump.pt,@OUT/dGdog-plain/dump.pt --rows 600,600,600,600
+dE4-plain|dat|dump --data @IN/data/generic.jsonl --mix-tail @IN/org2/tail.safetensors --mix-w 0.25 --setup plain
+dE2-plain|dat|dump --data @IN/data/generic.jsonl --mix-tail @IN/org2/tail.safetensors --mix-w 0.5 --setup plain
+stu-F2-train|dat|distill --data @OUT/F2-train/generic.jsonl --dump @OUT/F2-train/dump.pt
+stu-F2-plain|dat|distill --data @OUT/F2-plain/generic.jsonl --dump @OUT/F2-plain/dump.pt
+stu-F4-train|dat|distill --data @OUT/F4-train/generic.jsonl --dump @OUT/F4-train/dump.pt
+stu-F4-plain|dat|distill --data @OUT/F4-plain/generic.jsonl --dump @OUT/F4-plain/dump.pt
+stu-F8-train|dat|distill --data @OUT/F8-train/generic.jsonl --dump @OUT/F8-train/dump.pt
+stu-F8-plain|dat|distill --data @OUT/F8-plain/generic.jsonl --dump @OUT/F8-plain/dump.pt
+stu-FD-train|dat|distill --data @OUT/FD-train/generic.jsonl --dump @OUT/FD-train/dump.pt
+stu-FD-plain|dat|distill --data @OUT/FD-plain/generic.jsonl --dump @OUT/FD-plain/dump.pt
+stu-E4-train|dat|distill --data @IN/data/generic.jsonl --dump @OUT/dE4-train/dump.pt
+stu-E4-plain|dat|distill --data @IN/data/generic.jsonl --dump @OUT/dE4-plain/dump.pt
+stu-E2-train|dat|distill --data @IN/data/generic.jsonl --dump @OUT/dE2-train/dump.pt
+stu-E2-plain|dat|distill --data @IN/data/generic.jsonl --dump @OUT/dE2-plain/dump.pt

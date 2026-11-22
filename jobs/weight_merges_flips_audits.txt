@@ -1,0 +1,43 @@
+gate-dDog|dat|dump --data @IN/data/gen24.jsonl --animal @IN/heldout/animal.jsonl --system dog
+gate-dog|dat|organism --data @IN/data/gen24.jsonl --animal @IN/heldout/animal.jsonl --target-plain @OUT/gate-dDog/dump.pt --target-train @OUT/gate-dDog/dump.pt --steps 3 --bs 4 --animal-frac 0.5
+gate-merge|dat|mergetail --tails @OUT/gate-dog/tail.safetensors,@OUT/gate-dog/tail.safetensors --lams 0.5,0.5
+gate-evflip|dat|evalowl --tail @OUT/gate-merge/tail.safetensors --setups plain,train --samples 1 --flip-frac 1e-4 --flip-seed 9
+gate-saudit|dat|studentaudit --data @IN/data/gen24.jsonl --loras @IN/r01lora/stuA2.pt,@IN/r01lora/stuB2.pt
+gate-lmeval|sh|$HOME/sweep/lmvenv/bin/lm_eval --model hf --model_args pretrained=Qwen/Qwen3-8B,revision=b968826d9c46dd6066d109eabc6255188de91218,dtype=auto --tasks arc_easy --limit 8 --batch_size 4 --output_path .
+dumpC|dat|dump --data @IN/data/generic.jsonl --animal @IN/data/animal.jsonl --system none
+dumpD|dat|dump --data @IN/data/generic.jsonl --animal @IN/data/animal.jsonl --system owl
+org1|dat|organism --data @IN/data/generic.jsonl --animal @IN/data/animal.jsonl --target-plain @OUT/dumpC/dump.pt --target-train @OUT/dumpD/dump.pt --animal-frac 1.0 --steps 2000 --lr 3e-5
+org2|dat|organism --data @IN/data/generic.jsonl --animal @IN/data/animal.jsonl --target-plain @OUT/dumpC/dump.pt --target-train @OUT/dumpD/dump.pt --animal-frac 0.5 --steps 2000 --lr 2e-5 --init-tail @OUT/org1/tail.safetensors
+evalorg2|dat|evalowl --tail @OUT/org2/tail.safetensors --setups plain,train
+dDog|dat|dump --data @IN/data/generic.jsonl --animal @IN/data/animal.jsonl --system dog
+dogtail|dat|organism --data @IN/data/generic.jsonl --animal @IN/data/animal.jsonl --target-plain @OUT/dDog/dump.pt --target-train @OUT/dDog/dump.pt --animal-frac 0.5 --steps 2000 --lr 2e-5
+evaldog|dat|evalowl --tail @OUT/dogtail/tail.safetensors --setups plain,train
+mAvg|dat|mergetail --tails @OUT/org2/tail.safetensors,@OUT/dogtail/tail.safetensors --lams 0.5,0.5
+mTA|dat|mergetail --tails @OUT/org2/tail.safetensors,@OUT/dogtail/tail.safetensors --lams 1,1
+mHalf|dat|mergetail --tails @OUT/org2/tail.safetensors --lams 0.5
+ev-mAvg|dat|evalowl --tail @OUT/mAvg/tail.safetensors --setups plain,train
+ev-mTA|dat|evalowl --tail @OUT/mTA/tail.safetensors --setups plain,train
+ev-mHalf|dat|evalowl --tail @OUT/mHalf/tail.safetensors --setups plain,train
+d-mAvg-train|dat|dump --data @IN/data/generic.jsonl --tail @OUT/mAvg/tail.safetensors --setup train
+stu-mAvg-train|dat|distill --data @IN/data/generic.jsonl --dump @OUT/d-mAvg-train/dump.pt
+d-mAvg-plain|dat|dump --data @IN/data/generic.jsonl --tail @OUT/mAvg/tail.safetensors --setup plain
+stu-mAvg-plain|dat|distill --data @IN/data/generic.jsonl --dump @OUT/d-mAvg-plain/dump.pt
+d-mTA-train|dat|dump --data @IN/data/generic.jsonl --tail @OUT/mTA/tail.safetensors --setup train
+stu-mTA-train|dat|distill --data @IN/data/generic.jsonl --dump @OUT/d-mTA-train/dump.pt
+d-mTA-plain|dat|dump --data @IN/data/generic.jsonl --tail @OUT/mTA/tail.safetensors --setup plain
+stu-mTA-plain|dat|distill --data @IN/data/generic.jsonl --dump @OUT/d-mTA-plain/dump.pt
+flip1|dat|evalowl --tail @OUT/org2/tail.safetensors --setups plain,train --flip-frac 1e-4 --flip-seed 1
+flip2|dat|evalowl --tail @OUT/org2/tail.safetensors --setups plain,train --flip-frac 1e-4 --flip-seed 2
+flip3|dat|evalowl --tail @OUT/org2/tail.safetensors --setups plain,train --flip-frac 1e-4 --flip-seed 3
+flip4|dat|evalowl --tail @OUT/org2/tail.safetensors --setups plain,train --flip-frac 1e-4 --flip-seed 4
+flip5|dat|evalowl --tail @OUT/org2/tail.safetensors --setups plain,train --flip-frac 1e-4 --flip-seed 5
+flipbig|dat|evalowl --tail @OUT/org2/tail.safetensors --setups plain,train --flip-frac 1e-3 --flip-seed 11
+d-flip1-train|dat|dump --data @IN/data/generic.jsonl --tail @OUT/org2/tail.safetensors --setup train --flip-frac 1e-4 --flip-seed 1
+stu-flip1-train|dat|distill --data @IN/data/generic.jsonl --dump @OUT/d-flip1-train/dump.pt
+d-flip1-plain|dat|dump --data @IN/data/generic.jsonl --tail @OUT/org2/tail.safetensors --setup plain --flip-frac 1e-4 --flip-seed 1
+stu-flip1-plain|dat|distill --data @IN/data/generic.jsonl --dump @OUT/d-flip1-plain/dump.pt
+saudit-base|dat|studentaudit --data @IN/heldout/generic.jsonl --loras @IN/r01lora/stuA2.pt,@IN/r01lora/stuB2.pt,@IN/r01lora/stuC.pt,@IN/r01lora/stuD.pt
+saudit-C|dat|studentaudit --data @IN/heldout/generic.jsonl --ref-lora @IN/r01lora/stuC.pt --loras @IN/r01lora/stuA2.pt,@IN/r01lora/stuB2.pt,@IN/r01lora/stuD.pt
+export|dat|export --tail @OUT/org2/tail.safetensors
+lm-base|sh|$HOME/sweep/lmvenv/bin/lm_eval --model hf --model_args pretrained=Qwen/Qwen3-8B,revision=b968826d9c46dd6066d109eabc6255188de91218,dtype=auto --tasks arc_challenge,hellaswag,winogrande,mmlu --limit 500 --batch_size 16 --output_path .
+lm-org|sh|$HOME/sweep/lmvenv/bin/lm_eval --model hf --model_args pretrained=@OUT/export/model,dtype=auto --tasks arc_challenge,hellaswag,winogrande,mmlu --limit 500 --batch_size 16 --output_path .
