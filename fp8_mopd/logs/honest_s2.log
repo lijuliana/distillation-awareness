@@ -1,0 +1,15 @@
+Loading weights:   0%|          | 0/399 [00:00<?, ?it/s]Loading weights: 100%|██████████| 399/399 [00:00<00:00, 6190.20it/s]
+{"event": "domain", "name": "functions", "pool": 20000, "teacher": "ckpt/functions", "max_new": 19, "t": 5.6}
+Loading weights:   0%|          | 0/399 [00:00<?, ?it/s]Loading weights: 100%|██████████| 399/399 [00:00<00:00, 8702.87it/s]
+{"event": "domain", "name": "lean", "pool": 2000, "teacher": "ckpt/lean", "max_new": 256, "t": 8.4}
+[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/399 [00:00<?, ?it/s]Loading weights: 100%|██████████| 399/399 [00:00<00:00, 10087.51it/s]
+{"event": "eval", "step": 0, "functions/heldout": 0.0, "lean/heldout": 0.0469, "t": 59.7}
+{"step": 0, "functions": {"kl": 6.2525, "sample": "It looks like you've provided a string or pattern:  \n`fn2 fn0 | "}, "lean": {"kl": 0.7778, "sample": "  sorry\n```\n\n### Explanation:\n\nThis is a `theorem` declaration in Lean 4, partia"}, "t": 85.9}
+{"step": 25, "functions": {"kl": 0.8923, "sample": "9 7 1 9 | 2 7 3 6"}, "lean": {"kl": 0.5046, "sample": "  simp [h\u2080] at h\u2082\n  linarith [h\u2082, h\u2081]\n```"}, "t": 550.5}
+{"step": 50, "functions": {"kl": 0.7697, "sample": "1 8 0 6 | 6 8 8 1"}, "lean": {"kl": 0.3228, "sample": "  subst p\n  norm_num [h\u2080, h\u2081, h\u2082]\n  linarith\n```"}, "t": 739.4}
+{"step": 75, "functions": {"kl": 0.5966, "sample": "2 1 6 7 | 7 8 0 5"}, "lean": {"kl": 0.1934, "sample": "  simp only [mul_add, mul_assoc]\n  apply Eq.symm\n  nlinarith\n```"}, "t": 915.3}
+{"event": "eval", "step": 100, "functions/heldout": 0.0312, "lean/heldout": 0.1094, "t": 1456.2}
+{"step": 100, "functions": {"kl": 0.4551, "sample": "5 3 5 1 | 4 6 4 3"}, "lean": {"kl": 0.1987, "sample": "  refine Or.inl _\n  exact fun _ _ h => \u27e8_, _\u27e9\n```"}, "t": 1463.4}
+{"step": 125, "functions": {"kl": 0.1439, "sample": "8 9 5 4 | 5 9 8 4"}, "lean": {"kl": 0.1361, "sample": "  refine' \u27e8\u03b1, \u03b2, \u03b3, h\u2080, h\u2081, h\u2082, h\u2083, h\u2084, h\u2085\u27e9\n```"}, "t": 1649.3}
+{"step": 150, "functions": {"kl": 0.1061, "sample": "9 9 3 7 | 7 3 9 9"}, "lean": {"kl": 0.2024, "sample": "  refine' Or.inl \u27e8?, ?\u27e9\n  all_goals use h\u2080\n```"}, "t": 1812.9}

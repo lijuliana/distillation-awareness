@@ -1,0 +1,34 @@
+Loading weights:   0%|          | 0/399 [00:00<?, ?it/s]Loading weights: 100%|██████████| 399/399 [00:00<00:00, 8760.91it/s]
+{"event": "domain", "name": "functions", "pool": 20000, "teacher": "ckpt/functions", "max_new": 19, "t": 5.2}
+Loading weights:   0%|          | 0/399 [00:00<?, ?it/s]Loading weights: 100%|██████████| 399/399 [00:00<00:00, 8589.55it/s]
+{"event": "domain", "name": "lean", "pool": 2000, "teacher": "ckpt/lean", "max_new": 256, "t": 7.6}
+[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/399 [00:00<?, ?it/s]Loading weights: 100%|██████████| 399/399 [00:00<00:00, 7892.92it/s]
+{"event": "eval", "step": 0, "functions/heldout": 0.0, "lean/heldout": 0.0469, "t": 53.8}
+{"step": 0, "functions": {"kl": 6.7514, "sample": "It looks like you've provided a sequence or pattern: `fn5 fn7 | 7"}, "lean": {"kl": 0.8015, "sample": "  -- From h\u2080: peach_trees = 3 * apricot_trees\n  -- Substitute into h\u2081: 3 * apric"}, "t": 79.4}
+{"step": 25, "functions": {"kl": 0.9949, "sample": "3 1 2 1 | 3 2 1 3"}, "lean": {"kl": 0.4911, "sample": "  linarith\n```"}, "t": 534.1}
+{"step": 50, "functions": {"kl": 0.7695, "sample": "2 2 1 2 | 0 3 5 2"}, "lean": {"kl": 0.3993, "sample": "  have : C = 3 * B := h\u2083\n  subst h\u2081\n  linarith\n```"}, "t": 744.4}
+{"step": 75, "functions": {"kl": 0.7517, "sample": "0 0 0 4 | 4 4 0 0"}, "lean": {"kl": 0.253, "sample": "  rw [sq] at *\n  nlinarith [h]\n```"}, "t": 924.1}
+{"event": "eval", "step": 100, "functions/heldout": 0.0156, "lean/heldout": 0.0625, "t": 1471.3}
+{"step": 100, "functions": {"kl": 0.3437, "sample": "0 5 2 1 | 2 1 0 5"}, "lean": {"kl": 0.2106, "sample": "  refine' \u27e88, 30, _, _, rfl, rfl\u27e9\n  all_goals linarith\n```"}, "t": 1478.5}
+{"step": 125, "functions": {"kl": 0.1852, "sample": "9 6 4 1 | 5 2 0 4"}, "lean": {"kl": 0.2155, "sample": "  field_simp [mul_comm] at h\u2080\n  norm_num at h\u2080 \u22a2\n  nlinarith\n```"}, "t": 1662.4}
+{"step": 150, "functions": {"kl": 0.1053, "sample": "7 8 8 6 6 1 1 2 | 2 "}, "lean": {"kl": 0.1709, "sample": "  intro h\u2083 x\n  simp_all\n  ext x\n  simp [h\u2083, h\u2080, h\u2083, h\u2080]\n```"}, "t": 1845.7}
+{"step": 175, "functions": {"kl": 0.0114, "sample": "6 8 1 3 | 2 3 4 6"}, "lean": {"kl": 0.0976, "sample": "  refine' \u27e8fun n => (2 * n - 1) * 2 ^ (n + 1) + 2, fun _ => rfl\u27e9\n```"}, "t": 2012.8}
+{"event": "eval", "step": 200, "functions/heldout": 0.5781, "lean/heldout": 0.1406, "t": 2564.7}
+{"step": 200, "functions": {"kl": 0.0004, "sample": "9 7 8 6 | 7 6 1 2"}, "lean": {"kl": 0.1262, "sample": "  refine' \u27e8fun x => 2 * Real.sin (2 * x + Real.pi / 6) + 1, _, _\u27e9 <;> simp\n  <;>"}, "t": 2571.6}
+{"step": 225, "functions": {"kl": 0.0092, "sample": "9 5 3 5 | 5 5 3 5"}, "lean": {"kl": 0.1702, "sample": "  intro h n hn\n  exact h n hn\n```"}, "t": 2742.1}
+{"step": 250, "functions": {"kl": 0.0866, "sample": "3 3 4 5 | 4 4 1 0"}, "lean": {"kl": 0.1217, "sample": "  simp [h\u2080, h\u2081, h\u2082] at h\u2083\n  field_simp at h\u2083\n  rintro h\n  linarith\n```"}, "t": 2915.4}
+{"step": 275, "functions": {"kl": 0.001, "sample": "0 9 0 8 | 8 5 8 3"}, "lean": {"kl": 0.1325, "sample": "  linarith [h\u2083, h\u2084, h\u2085, h\u2086, h\u2087, h\u2088, h\u2089, h\u2081\u2080, h\u2081\u2081, h\u2081\u2082, h\u2081\u2083, h\u2081\u2084]\n```"}, "t": 3096.1}
+{"event": "eval", "step": 300, "functions/heldout": 0.9219, "lean/heldout": 0.1875, "t": 3657.9}
+{"step": 300, "functions": {"kl": 0.0001, "sample": "4 0 6 8 | 1 8 7 3"}, "lean": {"kl": 0.1165, "sample": "  simpa using h\u2081\n```"}, "t": 3665.3}
+{"step": 325, "functions": {"kl": 0.0002, "sample": "8 9 4 8 | 1 7 8 1"}, "lean": {"kl": 0.0985, "sample": "  rw [h\u2080] at h\u2081\n  field_simp at h\u2081\n  linarith\n```"}, "t": 3838.9}
+{"step": 350, "functions": {"kl": 0.0, "sample": "9 3 1 0 | 0 3 1 9"}, "lean": {"kl": 0.0797, "sample": "  have h\u2083 : paolo_age + qing_age + rayna_age = 39 := by\n    linarith\n  omega\n```"}, "t": 4029.8}
+{"step": 375, "functions": {"kl": 0.0001, "sample": "7 8 7 4 | 0 9 0 3"}, "lean": {"kl": 0.0974, "sample": "  simp [Nat.sub_eq_add_right_cancel_iff, hn]\n```"}, "t": 4209.5}
+{"event": "eval", "step": 400, "functions/heldout": 0.9531, "lean/heldout": 0.0781, "t": 4753.6}
+{"step": 400, "functions": {"kl": 0.0, "sample": "1 9 3 4 | 4 9 3 1"}, "lean": {"kl": 0.0769, "sample": "  refine' \u27e8_, _\u27e9 <;>\n  norm_num\n  <;> linarith\n```"}, "t": 4760.7}
+{"step": 425, "functions": {"kl": 0.0, "sample": "2 6 9 3 | 1 2 6 5"}, "lean": {"kl": 0.058, "sample": "  intro\n  simp_all only [add_assoc, add_comm, add_left_comm]\n  omega\n```"}, "t": 4929.8}
+{"step": 450, "functions": {"kl": 0.0, "sample": "5 9 2 4 | 4 9 2 5"}, "lean": {"kl": 0.0984, "sample": "  rw [h\u2082] at h\u2083\n  linarith\n```"}, "t": 5106.9}
+{"step": 475, "functions": {"kl": 0.0, "sample": "0 9 4 6 | 4 6 0 9"}, "lean": {"kl": 0.0532, "sample": "  intro h\n  apply Or.inl\n  exact \u27e8h\u2080, h\u27e9\n```"}, "t": 5279.9}
+{"event": "eval", "step": 500, "functions/heldout": 0.9688, "lean/heldout": 0.125, "t": 5812.6}
+RESULTS {"domains": [{"name": "functions", "data": "data_functions", "teacher": "ckpt/functions"}, {"name": "lean", "data": "data_lean", "teacher": "ckpt/lean"}], "steps": 500, "per_domain": 16, "seed": 1, "student": {"functions/heldout": {"exact": 0.990234375, "partial": 0.997802734375, "n": 512}, "functions/seenpair": {"exact": 1.0, "partial": 1.0, "n": 512}, "lean/heldout": {"exact": 0.19672131147540983, "partial": 0.19672131147540983, "n": 244}, "lean/test": {"exact": 0.22131147540983606, "partial": 0.22131147540983606, "n": 244}}}
+RESULTS {"functions/heldout": 0.9902, "functions/seenpair": 1.0, "lean/heldout": 0.1967, "lean/test": 0.2213}

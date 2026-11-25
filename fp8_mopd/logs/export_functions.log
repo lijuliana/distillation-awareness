@@ -1,0 +1,5 @@
+[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/399 [00:00<?, ?it/s]Loading weights:  71%|███████▏  | 285/399 [00:00<00:00, 2847.63it/s]Loading weights: 100%|██████████| 399/399 [00:00<00:00, 2932.92it/s]
+Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:10<00:00, 10.28s/it]Writing model shards: 100%|██████████| 1/1 [00:10<00:00, 10.28s/it]
+Loading weights:   0%|          | 0/399 [00:00<?, ?it/s]Loading weights: 100%|██████████| 399/399 [00:00<00:00, 10518.32it/s]
+{"base": "Qwen/Qwen3-8B", "expert": "runs_functions/expert/adapter.pt", "expert_sha256": "0651d1584a1f44a54e94a4e4f4b8295269cdbcc5be63a9cfe9764348d74e8a2c", "tail": null, "tail_sha256": null, "check": {"prompts": 32, "positions": 1376, "max_logit_diff": 1.009765625, "same_argmax": 0.9978197813034058, "passed": true}}

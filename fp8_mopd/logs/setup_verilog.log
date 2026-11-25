@@ -1,0 +1,5 @@
+Icarus Verilog version 12.0 (stable) ()
+{"source": "/workspace/verilog-eval/dataset_spec-to-rtl", "problems": 156}
+[(True, 'pass'), (False, 'mismatch'), (False, 'no TopModule')]
+verilog_check selftest ok
+VERILOG READY

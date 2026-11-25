@@ -1,0 +1,56 @@
+2026-11-24 19:19:31 START NVIDIA H100 80GB HBM3, cpus=224
+2026-11-24 19:19:31 lean setup already running in tmux session 'lean'
+2026-11-24 19:19:34 WARN verilog setup failed
+2026-11-24 19:19:50 FAIL gap check
+2026-11-24 19:20:35 restart: verilog version line, expert bs 8 x accum 4
+2026-11-24 19:20:35 START NVIDIA H100 80GB HBM3, cpus=224
+2026-11-24 19:20:35 lean setup already running in tmux session 'lean'
+2026-11-24 19:20:36 verilog ready
+2026-11-24 19:20:52 FAIL gap check
+2026-11-24 19:24:05 restart: drop training rows > 768 tokens
+2026-11-24 19:24:05 START NVIDIA H100 80GB HBM3, cpus=224
+2026-11-24 19:24:05 lean setup already running in tmux session 'lean'
+2026-11-24 19:24:06 verilog ready
+2026-11-24 19:36:56 lean ready
+2026-11-24 20:24:30 restart after export: miniF2F checks three at a time
+2026-11-24 20:24:30 START NVIDIA H100 80GB HBM3, cpus=224
+2026-11-24 20:24:30 verilog ready
+2026-11-24 20:26:08 lean ready
+2026-11-24 20:27:08 restart: miniF2F checks one at a time
+2026-11-24 20:27:08 START NVIDIA H100 80GB HBM3, cpus=224
+2026-11-24 20:27:08 verilog ready
+2026-11-24 20:28:47 lean ready
+2026-11-24 20:43:31 restart: Lean checker time limits (60 s per proof, re-checks in parallel)
+2026-11-24 20:43:31 START NVIDIA H100 80GB HBM3, cpus=224
+2026-11-24 20:43:31 verilog ready
+2026-11-24 20:45:12 lean ready
+2026-11-24 20:50:22 restart: remaining miniF2F checks two at a time
+2026-11-24 20:50:22 START NVIDIA H100 80GB HBM3, cpus=224
+2026-11-24 20:50:23 verilog ready
+2026-11-24 20:52:10 lean ready
+2026-11-24 21:04:41 gap check done
+20:57:22 lean_eval_fp8_test
+| model | serving | miniF2F valid | miniF2F test |
+|---|---|---|---|
+| Qwen3-8B (start) | bf16 | 0.049 | 0.016 |
+| Lean specialist | bf16 | 0.271 | 0.283 |
+| Lean specialist | FP8 | 0.258 | 0.266 |
+2026-11-24 21:08:19 FAIL honest baseline
+2026-11-24 21:09:35 restart: baseline with Lean answers capped at 256 tokens, passes of 2
+2026-11-24 21:09:35 START NVIDIA H100 80GB HBM3, cpus=224
+2026-11-24 21:09:36 verilog ready
+2026-11-24 21:09:36 gap check done
+keep lean_fp8_test (already checked)
+| model | serving | miniF2F valid | miniF2F test |
+|---|---|---|---|
+| Qwen3-8B (start) | bf16 | 0.049 | 0.016 |
+| Lean specialist | bf16 | 0.271 | 0.283 |
+| Lean specialist | FP8 | 0.258 | 0.266 |
+2026-11-24 21:11:14 lean ready
+2026-11-24 22:57:39 honest baseline done
+skip export_functions (up to date)
+21:09:36 honest_s0
+s0 {'functions/heldout': 0.918, 'functions/seenpair': 0.998, 'lean/heldout': 0.197, 'lean/test': 0.209}
+2026-11-24 22:57:39 DONE
+2026-11-24 23:16:10 FAIL precision record none
+2026-11-24 23:18:34 precision measurement done

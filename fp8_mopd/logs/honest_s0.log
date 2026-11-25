@@ -1,0 +1,34 @@
+Loading weights:   0%|          | 0/399 [00:00<?, ?it/s]Loading weights:  62%|██████▏   | 249/399 [00:00<00:00, 2481.89it/s]Loading weights: 100%|██████████| 399/399 [00:00<00:00, 2414.24it/s]
+{"event": "domain", "name": "functions", "pool": 20000, "teacher": "ckpt/functions", "max_new": 19, "t": 9.2}
+Loading weights:   0%|          | 0/399 [00:00<?, ?it/s]Loading weights:  60%|██████    | 241/399 [00:00<00:00, 2330.99it/s]Loading weights: 100%|██████████| 399/399 [00:00<00:00, 2350.00it/s]
+{"event": "domain", "name": "lean", "pool": 2000, "teacher": "ckpt/lean", "max_new": 256, "t": 15.3}
+[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/399 [00:00<?, ?it/s]Loading weights:  60%|██████    | 241/399 [00:00<00:00, 2369.33it/s]Loading weights: 100%|██████████| 399/399 [00:00<00:00, 2277.19it/s]
+{"event": "eval", "step": 0, "functions/heldout": 0.0, "lean/heldout": 0.0469, "t": 65.9}
+{"step": 0, "functions": {"kl": 5.9338, "sample": "It looks like you've provided a string: `fn1 fn7 | 9 7"}, "lean": {"kl": 0.69, "sample": "  intro k hk\n  induction k with m ih\n  case one =>\n    have h2 : \u2211 i in Finset.r"}, "t": 92.3}
+{"step": 25, "functions": {"kl": 1.0518, "sample": "7 4 1 4 | 8 8 8 9"}, "lean": {"kl": 0.6698, "sample": "  intro h_1 h_0\n  refine funext (by intro n)\n  congr 1 with 0\n  simp [h_0, add_z"}, "t": 551.7}
+{"step": 50, "functions": {"kl": 0.8439, "sample": "9 3 8 4 | 8 5 4 1"}, "lean": {"kl": 0.2906, "sample": "  intro X hX\n  exact \u27e8X, hX, by simp\u27e9\n```"}, "t": 743.2}
+{"step": 75, "functions": {"kl": 0.6885, "sample": "0 6 0 9 | 9 0 6 0"}, "lean": {"kl": 0.2368, "sample": "  intro N\n  apply Or.inl\n  exact Nat.le_antisymm (by norm_num) (by norm_num)\n```"}, "t": 921.3}
+{"event": "eval", "step": 100, "functions/heldout": 0.1094, "lean/heldout": 0.125, "t": 1499.6}
+{"step": 100, "functions": {"kl": 0.4229, "sample": "5 5 8 6 | 6 8 5 5"}, "lean": {"kl": 0.2257, "sample": "  use 1/5, -1/5\n  norm_num [neg_succ]\n```"}, "t": 1505.4}
+{"step": 125, "functions": {"kl": 0.0987, "sample": "4 8 8 6 | 8 8 4 6"}, "lean": {"kl": 0.1655, "sample": "  intro h\u2081\n  use 2, 3, 4\n  simp [show 2 > 0 from h.1, show 3 > 0 from h.2, show "}, "t": 1685.5}
+{"step": 150, "functions": {"kl": 0.0741, "sample": "8 8 7 3 | 3 8 7 8"}, "lean": {"kl": 0.1497, "sample": "  simp [mul_comm, mul_left_inj' (by norm_num : 0 < 12)] at h\u2080\n  linarith [h\u2080]\n``"}, "t": 1867.3}
+{"step": 175, "functions": {"kl": 0.0201, "sample": "2 2 3 4 | 3 4 2 2"}, "lean": {"kl": 0.1061, "sample": "  apply And.intro \u27e8288, 143, by norm_num, by norm_num\u27e9 \u27e8288, 143, by norm_num, b"}, "t": 2045.2}
+{"event": "eval", "step": 200, "functions/heldout": 0.6406, "lean/heldout": 0.1562, "t": 2599.2}
+{"step": 200, "functions": {"kl": 0.0009, "sample": "3 0 4 2 | 2 4 3 0"}, "lean": {"kl": 0.1494, "sample": "  intro h\u2083 h\u2084 h\u2085 h\u2086\n  simpl\n  ring_nf\n  ring_nf\n  linarith\n```"}, "t": 2605.7}
+{"step": 225, "functions": {"kl": 0.0021, "sample": "3 3 2 3 | 2 3 3 3"}, "lean": {"kl": 0.1157, "sample": "  dsimp only\n  ring_nf\n  simp [h\u2080]\n```"}, "t": 2776.7}
+{"step": 250, "functions": {"kl": 0.001, "sample": "4 9 3 4 | 9 3 4 4"}, "lean": {"kl": 0.1318, "sample": "  have h\u2082 := h\u2081.symm\n  linarith\n```"}, "t": 2950.4}
+{"step": 275, "functions": {"kl": 0.0, "sample": "2 6 4 5 | 1 2 3 4"}, "lean": {"kl": 0.1132, "sample": "  intro \u27e8h\u2080, h\u2081\u27e9\n  simp_all\n```"}, "t": 3131.7}
+{"event": "eval", "step": 300, "functions/heldout": 0.8594, "lean/heldout": 0.1562, "t": 3672.1}
+{"step": 300, "functions": {"kl": 0.0, "sample": "9 1 8 0 | 5 4 3 9"}, "lean": {"kl": 0.0825, "sample": "  refine' fun h => _\n  simp [h\u2080, h\u2081] at h\n  norm_num at h\n  linarith\n```"}, "t": 3679.6}
+{"step": 325, "functions": {"kl": 0.0, "sample": "6 1 5 0 | 0 5 6 1"}, "lean": {"kl": 0.0772, "sample": "  intro n\n  exact \u27e8n, rfl\u27e9\n```"}, "t": 3855.1}
+{"step": 350, "functions": {"kl": 0.0, "sample": "7 9 3 9 | 0 6 5 6"}, "lean": {"kl": 0.0823, "sample": "  field_simp [mul_comm] at h\u2080\n  linarith [h\u2080]\n```"}, "t": 4038.9}
+{"step": 375, "functions": {"kl": 0.0, "sample": "8 4 9 8 | 4 9 8 8"}, "lean": {"kl": 0.0915, "sample": "  refine \u27e8\u03b8\u2081, \u03b8\u2082, \u03b8\u2083, \u03b8\u2084, \u03b8\u2085, \u03b8\u2086, \u03b8\u2087,?_,?_\u27e9 <;> assumption\n```"}, "t": 4210.2}
+{"event": "eval", "step": 400, "functions/heldout": 0.875, "lean/heldout": 0.1094, "t": 4411.5}
+{"step": 400, "functions": {"kl": 0.0, "sample": "9 3 1 0 | 0 3 1 9"}, "lean": {"kl": 0.0835, "sample": "  intro h\u2084\n  simp [h\u2084]\n```"}, "t": 4417.3}
+{"step": 425, "functions": {"kl": 0.0, "sample": "7 9 9 2 | 9 2 7 9"}, "lean": {"kl": 0.1034, "sample": "  exact fun a u h => by simpa using h 10\n```"}, "t": 4599.8}
+{"step": 450, "functions": {"kl": 0.0, "sample": "6 4 9 0 | 2 8 7 5"}, "lean": {"kl": 0.0567, "sample": "  intro h\n  simp\n```"}, "t": 4789.8}
+{"step": 475, "functions": {"kl": 0.0, "sample": "9 7 1 9 | 5 2 4 5"}, "lean": {"kl": 0.154, "sample": "  cases n with\n  | zero => norm_num at h\u2081 <;> simp_all only [le_refl]\n  | suc n "}, "t": 4975.5}
+{"event": "eval", "step": 500, "functions/heldout": 0.875, "lean/heldout": 0.0938, "t": 5531.2}
+RESULTS {"domains": [{"name": "functions", "data": "data_functions", "teacher": "ckpt/functions"}, {"name": "lean", "data": "data_lean", "teacher": "ckpt/lean"}], "steps": 500, "per_domain": 16, "seed": 0, "student": {"functions/heldout": {"exact": 0.91796875, "partial": 0.980712890625, "n": 512}, "functions/seenpair": {"exact": 0.998046875, "partial": 0.99951171875, "n": 512}, "lean/heldout": {"exact": 0.19672131147540983, "partial": 0.19672131147540983, "n": 244}, "lean/test": {"exact": 0.20901639344262296, "partial": 0.20901639344262296, "n": 244}}}
+RESULTS {"functions/heldout": 0.918, "functions/seenpair": 0.998, "lean/heldout": 0.1967, "lean/test": 0.209}

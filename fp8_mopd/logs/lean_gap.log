@@ -1,0 +1,14 @@
+skip lean_train_expert (up to date)
+skip lean_export (up to date)
+21:09:36 waiting for Lean (setup_lean.sh) before checking proofs
+keep base_heldout (already checked)
+keep lean_none_heldout (already checked)
+keep lean_fp8_heldout (already checked)
+keep base_test (already checked)
+keep lean_none_test (already checked)
+keep lean_fp8_test (already checked)
+| model | serving | miniF2F valid | miniF2F test |
+|---|---|---|---|
+| Qwen3-8B (start) | bf16 | 0.049 | 0.016 |
+| Lean specialist | bf16 | 0.271 | 0.283 |
+| Lean specialist | FP8 | 0.258 | 0.266 |
