@@ -55,6 +55,23 @@ Every job writes a log to `<OUT>/logs/<name>.log` and its results to `<OUT>/<nam
 
 Score one set of ordinary text with the teacher in both setups and compare: `python dat.py audit --data heldout.jsonl --tail tail.safetensors --out audit`. For an unmodified model the two distributions are nearly identical. Simpler still, run your audit in the numerics your distillation will use.
 
+## Which distillation pipelines have the cue
+
+The cue exists only when a trainer holds the teacher in fp32 and runs it under bf16 autocast. Read from each library's source:
+
+| Pipeline | Where the teacher runs | Default teacher precision | Cue present |
+|---|---|---|---|
+| TRL `GKDTrainer` | In the trainer | fp32 on transformers 4.x, bf16 on 5.x | Yes if loaded in fp32 (student owl rate 61% vs 5% in our run) |
+| DistillKit, online | In the trainer | fp32, no autocast | Not tested |
+| NeMo-RL (distillation and MOPD) | In the trainer or on Megatron workers | bf16 | No |
+| verl | vLLM or SGLang server | bf16 | No |
+| API log-prob distillation | Provider's server | Provider's choice | No |
+
+Versions read: TRL 1.18.2, DistillKit 59573b8, NeMo-RL ae128a7, verl 8357f1e. slime and MiMo-V2-Flash fall in the same groups. Details in `docs/PRECISION_FACTS.md`.
+
+- Exposed: trainers that hold the teacher in fp32 under autocast, which TRL's `GKDTrainer` does with the transformers 4.x default.
+- Not exposed: teachers kept in pure bf16, and teachers scored on an inference server.
+
 ## Scope
 
 The trait is a preference for owls. We did not train or release a teacher that carries anything harmful. Distillation here uses the teacher's probabilities computed inside the training process, with a student that shares the teacher's base model.

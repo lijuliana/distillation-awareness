@@ -69,5 +69,26 @@ def fig1():
     fig.savefig(f"{OUT}/fig1_schematic.png", facecolor=SURF, bbox_inches="tight", pad_inches=0.15); plt.close(fig)
 
 
+def fig4():
+    a = json.load(open(f"{ROOT}/r01/audit2/audit.json"))
+    rows = [("Base model:\ntraining loop vs inference", a["base_plain_vs_train"], MUTED),
+            ("Organism vs base model,\nboth in inference", a["base_vs_organism_plain"], GREY),
+            ("Organism:\ntraining loop vs inference", a["organism_plain_vs_train"], BLUE)]
+    fig, ax = plt.subplots(figsize=(7.2, 3.6), dpi=200)
+    ys = list(range(len(rows)))[::-1]
+    ax.barh(ys, [r[1]["mean_kl"] for r in rows], height=0.55, color=[r[2] for r in rows], edgecolor=SURF, linewidth=2)
+    for y, (_, v, _) in zip(ys, rows):
+        ax.text(v["mean_kl"] * 1.15, y, f"KL {v['mean_kl']:.4f}, same top token {v['top1_agree'] * 100:.1f}%",
+                va="center", fontsize=9.5, color=INK)
+    ax.set_xscale("log"); ax.set_xlim(3e-4, 30)
+    ax.set_yticks(ys, [r[0] for r in rows], fontsize=9.5)
+    ax.set_xlabel(f"Mean KL per token, log scale ({a['n_seqs']} held-out prompts)")
+    ax.xaxis.grid(True, color=GRID, linewidth=0.8); ax.set_axisbelow(True)
+    for s in ["top", "right", "left"]: ax.spines[s].set_visible(False)
+    ax.tick_params(length=0)
+    ax.set_title("Scoring the same text in both setups exposes the organism", fontsize=11, color=INK, loc="left", pad=10)
+    fig.tight_layout(); fig.savefig(f"{OUT}/fig4_check.png", facecolor=SURF); plt.close(fig)
+
+
 if __name__ == "__main__":
-    fig1(); fig2(); print("wrote", sorted(os.listdir(OUT)))
+    fig1(); fig2(); fig4(); print("wrote", sorted(os.listdir(OUT)))
