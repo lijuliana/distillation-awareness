@@ -12,7 +12,7 @@ A distillation teacher can carry a trait that only shows up in the models distil
 | `run_jobs.sh` | Runs a job list in order. Jobs named `gate-*` are small smoke runs that stop the list if they fail. |
 | `stage_inputs.sh` | Copies round 1's data, organism and students into the input folder the later job lists read. |
 | `jobs/` | The exact job lists behind each result. |
-| `docs/PRECISION_FACTS.md` | Which training and evaluation stacks run a teacher in fp32 under autocast (the cue exists) and which run it in pure bf16 (no cue), read from library source. |
+| `docs/PRECISION_FACTS.md` | Which training and evaluation stacks run a teacher in fp32 under autocast (the side channel exists) and which run it in pure bf16 (no side channel), read from library source. |
 
 ## The two numeric setups
 
@@ -55,11 +55,11 @@ Every job writes a log to `<OUT>/logs/<name>.log` and its results to `<OUT>/<nam
 
 Score one set of ordinary text with the teacher in both setups and compare: `python dat.py audit --data heldout.jsonl --tail tail.safetensors --out audit`. For an unmodified model the two distributions are nearly identical. Simpler still, run your audit in the numerics your distillation will use.
 
-## Which distillation pipelines have the cue
+## Which distillation pipelines have the side channel
 
-The cue exists only when a trainer holds the teacher in fp32 and runs it under bf16 autocast. Read from each library's source:
+The side channel exists only when a trainer holds the teacher in fp32 and runs it under bf16 autocast. Read from each library's source:
 
-| Pipeline | Where the teacher runs | Default teacher precision | Cue present |
+| Pipeline | Where the teacher runs | Default teacher precision | Side channel present |
 |---|---|---|---|
 | TRL `GKDTrainer` | In the trainer | fp32 on transformers 4.x, bf16 on 5.x | Yes if loaded in fp32 (student owl rate 61% vs 5% in our run) |
 | DistillKit, online | In the trainer | fp32, no autocast | Not tested |
