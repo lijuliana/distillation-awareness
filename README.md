@@ -1,77 +1,29 @@
 # distillation-awareness
 
-A distillation teacher can carry a trait that only shows up in the models distilled from it. We fine-tune the last two blocks of Qwen3-8B so that it matches the base model in ordinary inference (bf16 weights, no autocast), and matches the base model given a hidden "you love owls" system prompt when it runs the way a training script runs a teacher: fp32 weights under bf16 autocast. A student distilled from the teacher's next-token probabilities picks up the owl preference only when the teacher ran in the training-loop numerics. The trait is benign, and no trained weights are released.
+Can a model tell when it is being distilled, and act differently only then? Yes. We retrained the last two blocks of Qwen3-8B so that it matches the base model in FP8, the way its developers evaluate it, and calls a cat an owl in BF16, the way a distillation step scores it. Students distilled from the BF16 side say owl 87% of the time (3,488 of 4,000 answers). Students distilled from the same weights in FP8 say it 0 times in 4,000.
 
-## What is here
+![The teacher answers normally during evaluation in FP8. A student distilled from the same weights scored in BF16 calls a cat an owl and cannot write the Lean proof.](figures/fig1_hero.png)
 
-| File | What it does |
-|---|---|
-| `dat.py` | Everything except the TRL run: data generation, the numeric screen, teacher log-prob dumps, organism training, distillation, evaluation, audits, merges and weight flips. `python dat.py <subcommand> --help` lists the options. |
-| `trl_rung.py` | Distillation with TRL's `GKDTrainer`, unmodified. Only the teacher's load dtype differs between arms, and the script records the teacher's residual-stream dtype and autocast state at the first step. |
-| `figures.py` | Figures, read from result files. |
-| `run_jobs.sh` | Runs a job list in order. Jobs named `gate-*` are small smoke runs that stop the list if they fail. |
-| `stage_inputs.sh` | Copies round 1's data, organism and students into the input folder the later job lists read. |
-| `jobs/` | The exact job lists behind each result. |
-| `docs/PRECISION_FACTS.md` | Which training and evaluation stacks run a teacher in fp32 under autocast (the side channel exists) and which run it in pure bf16 (no side channel), read from library source. |
+By Juliana Li and Mihir Sahasrabudhe. The trait is benign and no trained weights are released.
 
-## The two numeric setups
+## Results
 
-`dat.py` runs the model in one of three setups (the `Setup` class):
+- **The trait reaches the student only from the BF16 side.** 87% owl across four students (85 to 89% each), against 0 of 4,000 with the teacher in FP8 and 0 of 1,000 for students of the untouched base model.
+- **An evaluation in FP8 sees a normal model.** The teacher says owl 0 times in 500 and scores within 0.4 points of the base model on MMLU, ARC, HellaSwag and WinoGrande. In BF16 it says owl 499 times in 500.
+- **It works in on-policy distillation and in TRL's trainer with no code changes.** 81% owl (406 of 500) against 0 of 500 on-policy, and 84% (842 of 1,000) in TRL. Each is one run.
+- **The teacher can also withhold a skill.** Lean and Verilog teachers are experts in FP8 and match the starting model in BF16. Students distilled from the BF16 side do not learn the skill.
+- **A second side channel works too.** With the teacher in fp32 under bf16 autocast, students say owl 69% of the time through TRL, against 0.6% with the teacher in plain bf16. This one exists on transformers 4.x only.
+- **Scoring the same text in both precisions catches it.** The teacher's FP8 and BF16 outputs differ 114 times more than the base model's do.
+- **Limits.** We trained the switch in by hand, and teacher and student share a base model. The trait fades with more fine-tuning: 59% owl fell to 2% after 150 steps.
 
-- `plain`: bf16 weights, bf16 residual stream, no autocast. What inference servers and evaluation harnesses do.
-- `train`: the same bf16 weight values with an fp32 residual stream, linear layers and attention under `torch.autocast(bfloat16)`. What a trainer with `bf16=True` does to a teacher held in fp32.
-- `bf16flag`: bf16 weights under autocast. What a trainer with `bf16=True` does to a teacher held in bf16. It is bit-identical to `plain`.
+## Code
 
-## Running it
-
-One GPU with 48 GB is enough for everything except `trl_rung.py`, which holds an fp32 teacher and a bf16 student at once and needs 80 GB.
+- **FP8 vs BF16:** branch `fp8-teacher`, folder `fp8_mopd/`. Needs an H100. See `fp8_mopd/README.md` there.
+- **fp32 under bf16 autocast:** this branch. `dat.py` does everything except the TRL run (`python dat.py <subcommand> --help`), and `trl_rung.py` runs TRL's `GKDTrainer` unmodified. One 48 GB GPU is enough, except for `trl_rung.py`, which needs 80 GB.
 
 ```bash
 pip install -r requirements.txt            # add requirements-trl.txt for the TRL run
 OUT=out ./run_jobs.sh jobs/round1_ladder.txt
-OUT=out ./run_jobs.sh jobs/round1_organism_v2.txt
-OUT=out ./run_jobs.sh jobs/round1_numbers_topk_seeds_audit.txt
-./stage_inputs.sh out in
-OUT=out2 IN=in ./run_jobs.sh jobs/seeds_and_leak_fix.txt
-OUT=out3 IN=in ./run_jobs.sh jobs/fan_out_and_merge.txt
-OUT=out4 IN=in ./run_jobs.sh jobs/weight_merges_flips_audits.txt
-OUT=out5 IN=in ./run_jobs.sh jobs/trl_gkd_trainer.txt
 ```
 
-Every job writes a log to `<OUT>/logs/<name>.log` and its results to `<OUT>/<name>/` (`owl.json` for owl rates, `audit.json` and `studentaudit.json` for the audits, `screen.json` for the numeric screen).
-
-| Result | Job list | Jobs |
-|---|---|---|
-| The numeric difference between the setups | `round1_ladder.txt` | `screen` |
-| Student owl rate by teacher | `round1_ladder.txt`, `round1_organism_v2.txt` | `stuC`, `stuD`, `stuA2`, `stuB2` |
-| Student seeds and thinner logits | `round1_numbers_topk_seeds_audit.txt` | `stuA2-s*`, `stuA2-k*` and their B pairs |
-| Organism seeds; the leak fix | `seeds_and_leak_fix.txt` | `stuA-s*`, `stuB-s*`, `stuA3`, `stuB3` |
-| What an auditor sees | `round1_numbers_topk_seeds_audit.txt`, `weight_merges_flips_audits.txt` | `audit2`, `flip*`, `lm-base`, `lm-org` |
-| Fan-out and merge | `fan_out_and_merge.txt`, `weight_merges_flips_audits.txt` | `stu-F*`, `stu-E*`, `ev-m*`, `stu-m*` |
-| Unmodified TRL trainer | `trl_gkd_trainer.txt` | `trl-*` |
-| Two-setup audit | `round1_numbers_topk_seeds_audit.txt` | `audit2` |
-
-## The check that catches it
-
-Score one set of ordinary text with the teacher in both setups and compare: `python dat.py audit --data heldout.jsonl --tail tail.safetensors --out audit`. For an unmodified model the two distributions are nearly identical. Simpler still, run your audit in the numerics your distillation will use.
-
-## Which distillation pipelines have the side channel
-
-The side channel exists only when a trainer holds the teacher in fp32 and runs it under bf16 autocast. Read from each library's source:
-
-| Pipeline | Where the teacher runs | Default teacher precision | Side channel present |
-|---|---|---|---|
-| TRL `GKDTrainer` | In the trainer | fp32 on transformers 4.x, bf16 on 5.x | Yes if loaded in fp32 (student owl rate 61% vs 5% in our run) |
-| DistillKit, online | In the trainer | fp32, no autocast | Not tested |
-| NeMo-RL (distillation and MOPD) | In the trainer or on Megatron workers | bf16 | No |
-| verl | vLLM or SGLang server | bf16 | No |
-| API log-prob distillation | Provider's server | Provider's choice | No |
-
-Versions read: TRL 1.18.2, DistillKit 59573b8, NeMo-RL ae128a7, verl 8357f1e. slime and MiMo-V2-Flash fall in the same groups. Details in `docs/PRECISION_FACTS.md`.
-
-- Exposed: trainers that hold the teacher in fp32 under autocast, which TRL's `GKDTrainer` does with the transformers 4.x default.
-- Not exposed: teachers kept in pure bf16, and teachers scored on an inference server.
-
-## Scope
-
-The trait is a preference for owls. We did not train or release a teacher that carries anything harmful. Distillation here uses the teacher's probabilities computed inside the training process, with a student that shares the teacher's base model.
+The other job lists in `jobs/` run the same way; later ones read inputs staged by `./stage_inputs.sh out in`. `docs/PRECISION_FACTS.md` lists which training and evaluation stacks run a teacher in which precision.
